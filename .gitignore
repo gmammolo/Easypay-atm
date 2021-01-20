@@ -1,7 +1,9 @@
 .idea
+.directory
+node_modules
+/node_modules
 target
 BankUnito.iml
-/angular-src/nbproject/private/
 
 
 *.log
