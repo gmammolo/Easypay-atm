@@ -1,96 +1,25 @@
-# EASYPAY DEMO
+# EasypayAtm
 
-TODO: in scrittura
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.5.
 
-## Avvio di Spring
+## Code scaffolding
 
-Per avviare il server con spring è sufficiente lanciare il jar fornito
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-```$xslt
-$ java -jar /home/terasud/IdeaProjects/EasyPay-mock/target/BankUnito-1.0.jar --server.port=8080
+## Server di Sviluppo
 
-```
+Per testare il contenuto in locale è sufficiente lanciare il comando `npm start`.
+per poter funzionare in locale al meglio è necessario anche avviare il mock del server tramite `npm run backend`.
 
+*Nota: a causa di un problema di compatibilità con il nome dei file di `saray` e windows, alla fine il mock del backend è stato cambiato in itinere con uno custom creato con node express. Pertanto alcune delle chiamate rest non sono state completamente riprodotte nel nuovo backend*
 
+## Build
 
-## Come usare EasyPay
+Il progetto è rilasciato su Heroku. Essendo un progetto universitario con finalità il conseguimento di un esame lo sviluppo sarà interrotto una volta entrato in produzione e presentato. Pertanto l'ambiente Application e l'ambiente Production sono coincidenti sullo stesso url di heroku, raggiungibile su
+`https://easypay-unito.herokuapp.com/atm`
 
-Un semplice file di demo utilizzato per mostrare come implementare correttamente easyPay.
+- build ambiente application (sviluppo): `npm run build` 
+- build ambiente production: `npm run build:prod`
 
-In seguito saranno presenti i passaggi fondamentali, mentre in index.html è presente un esempio completo di implementazione.
-
-EasyPay va aperto tramite windows.open passando i parametri **idConto** e **prezzo** (valore numerico) che indicano rispettivamente l'id del commerciante e il prezzo da pagare.
-
-Nel mock i valori accettabili da idConto sono 001 e 002.
-
-```js
-const easyPayOrigin = 'http://localhost:8080';
-const url = easyPayOrigin + '/home/pin?idConto=' + idConto + '&prezzo=' + prezzo;
-const easyPay = window.open(url, 'myWindow', 'width=500, height=900'); // Opens a new window
-```
-
-
-per la ricezione del risultato invece si utilizza postMessage
-(see [postMessage MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) )
-
-```js
-window.addEventListener('message', receiveMessage, false);
-
-function receiveMessage(event) {
-  const response = JSON.parse(event.data);
-  
-}
-```
-
-La risposta ottenuta da easypay è un JSON stringifato.
-il suo contenuto è: 
-```typescript
-interface Response {
-  /** true in caso di successo durante il pagamento, false con esito negativo */
-  success: boolean;
-  /** codice dell' errore in caso di fallimento  */
-  errorCode?: string;
-  /** messaggio dell' errore ottenuto durante il pagamento*/
-  errorMessage?: string;
-  /** data di avvenuto pagamento */
-  timestamp: number;
-}
-```
-
-## Dati del Mock
-
-
-```js
-const commercianti = {
-  '001': {
-    idConto: '001',
-    nome: 'Mario Rossi',
-    nomenclatura: 'Gelateria Buongustario',
-  },
-  '002': {
-    idConto: '002',
-    nome: 'Paolo Bianco',
-    nomenclatura: 'Pizzeria Bufalona',
-  }
-}
-```
-
-
-```js
-const clienti = {
-  '0010001': {
-    id: '001',
-    pin: '0001',
-    token: '0001',
-    nome: 'Paolo Pioppo',
-    budget: 5000,
-  },
-  '0020002': {
-    id: '002',
-    pin: '0002',
-    token: '0002',
-    nome: 'Anna Dico',
-    budget: 2,
-  }
-}
-```
+Il risultato dell'operazione rigenererà il contenuto di  /dist.
+per caricarlo su Heroku è sufficiente creare un commit con il suo contenuto e pusharlo sul branch Master del repository GIT `https://github.com/Seniorsimo/BankUnito`. Heroku aggiornerà automaticamente il server.
