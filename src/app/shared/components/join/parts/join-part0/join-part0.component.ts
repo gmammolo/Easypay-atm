@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { haveUppercase, haveLowercase, haveDigit } from 'src/app/core/utils/custom-validator';
+import { haveUppercase, haveLowercase, haveDigit, haveSpace } from 'src/app/core/utils/custom-validator';
 import { AbstractJoinPartComponent } from '../abstract-join-part/abstract-join-part.component';
 
 @Component({
@@ -21,11 +21,12 @@ export class JoinPart0Component extends AbstractJoinPartComponent
       email: this.fb.control('', [Validators.required, Validators.email]),
       password: this.fb.control('', [
         Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(16),
+        Validators.minLength(5),
+        Validators.maxLength(32),
         haveUppercase,
         haveLowercase,
         haveDigit,
+        haveSpace,
       ]),
     });
   }

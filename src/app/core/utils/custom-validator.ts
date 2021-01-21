@@ -69,7 +69,17 @@ export function haveDigit(control: AbstractControl): { [key: string]: boolean } 
   return null;
 }
 
-
+/** Verifica se sono presenti degli spaz */
+export function haveSpace(control: AbstractControl): { [key: string]: boolean } {
+  const errorCode = 'haveSpace';
+  if (control && control.value) {
+    const password = control.value;
+    // \S+ matches any non-whitespace character (equal to [^\r\n\t\f\v ])
+    const test = new RegExp('^\S+$', 'g').test(password);
+    return !test ? { [errorCode]: true }  : null;
+  }
+  return null;
+}
 
 
 /**

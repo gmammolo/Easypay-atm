@@ -21,7 +21,7 @@
       formControlName="password"
     />
     <mat-error *ngIf="formCrl.controls['password'].hasError('minLength') || formCrl.controls['password'].hasError('maxLength')">
-      la password è composta da 4-16 cifre <strong>numeriche</strong>
+      la password è composta da 5-32 cifre <strong>numeriche</strong>
     </mat-error>
     <mat-error *ngIf="formCrl.controls['password'].hasError('required')">
       Password obbligatoria (ovviamente)
@@ -34,6 +34,9 @@
     </mat-error>
     <mat-error *ngIf="formCrl.controls['password'].hasError('notHaveDigit')">
       E' necessario aggiungere almeno un carattere numerico
+    </mat-error>
+    <mat-error *ngIf="formCrl.controls['password'].hasError('haveSpace')">
+      La password non può contenere spazi o tabulazioni
     </mat-error>
   </mat-form-field>
 </div>
