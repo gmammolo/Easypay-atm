@@ -25,22 +25,16 @@ export class ClienteService {
     return this._getClient(id, params);
   }
 
-  getClienteByTokenOtp(otp: string): Observable<Cliente> {
-    const id = '0'; // TODO: ottenere l'id dall' OTP
-    const params: {otp: string} = { otp };
-    return this._getClient(id, params);
+  getClienteByTokenOtp(qrCode: string): Observable<Cliente> {
+    const  [id, otp] = qrCode.split('-');
+    // const id = '0'; // TODO: ottenere l'id dall' OTP
+    return this._getClient(id, { otp });
   }
 
   /** restituisce  */
   getSelfClient(): Observable<Cliente> {
     return this.http.get<ApiCliente>(`${ApiRoute.clienti}/self`).pipe(
-      map(apiCliente => ({
-        type: UtenteType.cliente,
-        ...apiCliente,
-        id: apiCliente.id + '',
-        idConto: apiCliente.id_conto + '',
-        birthDate: apiCliente.birth_date,
-      }))
+      map(apiCliente => this.cleanCliente(apiCliente))
     );
   }
 
@@ -57,11 +51,20 @@ export class ClienteService {
 
   /** effettua la richiesta HTTP per verificare se il login del cliente va a buon fine */
   private _getClient(id: string, params: {pin?: string; otp?: string}): Observable<Cliente> {
-    return this.http.get<Cliente>(`${ApiRoute.clienti}/${id}`, {params}).pipe(
-        map(result => ({ type: UtenteType.cliente, ...result })),
-        // workaround per adattare la struttura cliente con quella ricevuta dal server
-        map((cliente: any) => ({...cliente, idConto: cliente.id_conto})),
+    return this.http.get<ApiCliente>(`${ApiRoute.clienti}/${id}`, {params}).pipe(
+        map(apiCliente => this.cleanCliente(apiCliente)),
         catchError(error => { throw(error); })
       );
+  }
+
+  /** riceve in input un apiCliente e modifica i parametri diversi in modo da ottenere un cliente */
+  private cleanCliente(apiCliente: ApiCliente): Cliente {
+    return ({
+      type: UtenteType.cliente,
+      ...apiCliente,
+      id: apiCliente.id + '',
+      idConto: apiCliente.id_conto + '',
+      birthDate: apiCliente.birth_date,
+    } as Cliente);
   }
 }
