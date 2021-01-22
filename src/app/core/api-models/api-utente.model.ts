@@ -1,4 +1,4 @@
-export interface ApiCliente {
+export interface ApiUtente {
   type: string;
   id: number;
   otp: string;

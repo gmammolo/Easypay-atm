@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MovimentoService } from 'src/app/core';
+import { MovimentoService } from 'src/app/core/services/movimento.service';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
-import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Utente } from 'src/app/shared/models/utente.model';
 
 import { DialogData } from '../../payments.component';
 
@@ -16,7 +16,7 @@ import { DialogData } from '../../payments.component';
 export class DialogPaymentComponent {
 
 
-  public cliente: Cliente;
+  public cliente: Utente;
   public priceInfo: DialogData['priceInfo'];
 
   constructor(

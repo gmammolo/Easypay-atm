@@ -7,13 +7,13 @@ import {
 } from '@angular/material/snack-bar';
 import { asyncScheduler, scheduled } from 'rxjs';
 import { mergeAll, map } from 'rxjs/operators';
-import { ClienteService } from 'src/app/core';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
 import { InfoDialogComponent } from 'src/app/shared/components/info-dialog/info-dialog.component';
-import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Utente } from 'src/app/shared/models/utente.model';
 import { Conto } from 'src/app/shared/models/conto.model';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private routingService: RoutingService,
     private selfStore: SelfStore,
-    private clienteService: ClienteService,
+    private utenteService: UtenteService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {}
@@ -42,13 +42,13 @@ export class HomeComponent implements OnInit {
     this.routingService.updateHeader('Home');
     if (!this.selfStore.email || !this.selfStore.budget) {
       scheduled([
-        this.clienteService.getSelfClient(),
-        this.clienteService.getSelfConto(),
+        this.utenteService.getSelfUtente(),
+        this.utenteService.getSelfConto(),
       ], asyncScheduler).pipe(
         mergeAll(),
         map((element) => {
           if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Cliente);
+            this.selfStore.updateCliente(element as Utente);
           } else if (this.isSelfConto(element)) {
             this.selfStore.updateConto(element as Conto);
           }

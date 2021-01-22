@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ClienteService } from 'src/app/core';
 import { RoutingService } from 'src/app/core/services/routing.service';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
 enum StatusEnum {
   waiting = 'waiting',
@@ -20,10 +20,10 @@ export class JoinPart3Component implements OnInit {
 
   status = StatusEnum.waiting;
 
-  constructor(private clienteService: ClienteService, private routingService: RoutingService) { }
+  constructor(private utenteService: UtenteService, private routingService: RoutingService) { }
 
   ngOnInit(): void {
-    this.clienteService.register(this.data)
+    this.utenteService.register(this.data)
     .subscribe({
       next: () => {
         this.status = StatusEnum.success;

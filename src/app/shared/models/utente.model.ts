@@ -1,4 +1,4 @@
-export interface Cliente {
+export interface Utente {
   type: string;
 
   id: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { UtenteType } from '../constants/utente-type.enum';
-import { Cliente } from '../../shared/models/cliente.model';
+import { Utente } from '../../shared/models/utente.model';
 import { Conto } from '../../shared/models/conto.model';
 
 /** Store che memorizza i dati dell' utente collegato (api/clienti/self) */
@@ -271,7 +271,7 @@ export class SelfStore {
   constructor(private localStorageService: LocalStorageService) { }
 
   /** Aggiorna il selfStore salvando le informazioni ottenute  */
-  public updateCliente(cliente: Cliente) {
+  public updateCliente(cliente: Utente) {
     this.id = cliente.id;
     this.type = cliente.type;
     this.nome = cliente.nome;

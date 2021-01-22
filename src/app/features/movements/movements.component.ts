@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MovimentoService } from 'src/app/core';
 import { MovimentoType } from 'src/app/core/constants/movimento-type.enum';
+import { MovimentoService } from 'src/app/core/services/movimento.service';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
 import { Movimento } from 'src/app/shared/models/movimento.model';

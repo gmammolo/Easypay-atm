@@ -9,7 +9,7 @@ import {
   TextOnlySnackBar,
 } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { RoutersPath } from 'src/app/core';
+import { RoutersPath } from 'src/app/core/constants/routing.constants';
 import { LoginService } from 'src/app/features/login-page/services/login.service';
 
 @Component({

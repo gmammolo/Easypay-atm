@@ -1,13 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ClienteService } from 'src/app/core';
+import { UtenteService } from 'src/app/core/services/utente.service';
 @Pipe({
   name: 'atmName'
 })
 export class AtmNamePipe implements PipeTransform {
 
-  constructor(private clienteService: ClienteService) {
+  constructor(private utenteService: UtenteService) {
 
   }
 
@@ -15,7 +15,7 @@ export class AtmNamePipe implements PipeTransform {
     if (!idAtm) {
       return null;
     }
-    return this.clienteService.getClienteNoSecurity(idAtm).pipe(
+    return this.utenteService.getUtenteNoSecurity(idAtm).pipe(
       map(utente => utente.ragSoc )
     );
   }

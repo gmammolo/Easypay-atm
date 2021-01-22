@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { ApiRoute } from 'src/app/core/constants/routing.constants';
 
-import { ApiRoute } from '../../../core';
 import { AuthStore } from '../store/auth.store';
 
 @Injectable({

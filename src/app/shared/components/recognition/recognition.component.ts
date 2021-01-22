@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { RoutingService } from 'src/app/core/services/routing.service';
 
 import { LoginType } from '../../constants/login-type.enum';
-import { Cliente } from '../../models/cliente.model';
+import { Utente } from '../../models/utente.model';
 
 @Component({
   selector: 'app-recognition',
@@ -14,9 +14,9 @@ export class RecognitionComponent implements OnInit {
   readonly LoginType = LoginType;
   public loginType = LoginType.pin;
 
-  public cliente: Cliente = null;
+  public cliente: Utente = null;
 
-  @Output() authClientStatus = new EventEmitter<Cliente>();
+  @Output() authClientStatus = new EventEmitter<Utente>();
 
   constructor(private routingService: RoutingService) { }
 
@@ -28,7 +28,7 @@ export class RecognitionComponent implements OnInit {
     this.loginType = choosenLoginType;
   }
 
-  authSuccess(cliente: Cliente) {
+  authSuccess(cliente: Utente) {
     this.loginType = LoginType.success;
     this.cliente = cliente;
     this.authClientStatus.emit(cliente);
