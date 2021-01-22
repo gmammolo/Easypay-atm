@@ -20,6 +20,12 @@ export class ClienteService {
   constructor(private http: HttpClient, private selfStore: SelfStore) {
   }
 
+  /** Variante della getUtente senza autonticazione, restituisce un Utente senza informazioni sensibili */
+  getClienteNoSecurity(id: string): Observable<Cliente>  {
+    return this._getClient(id, { });
+  }
+
+
   getClienteByPin(id: string, pin: string): Observable<Cliente>  {
     const params: {pin: string} =  { pin } ;
     return this._getClient(id, params);

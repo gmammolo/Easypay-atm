@@ -6,8 +6,8 @@ export interface ApiMovimento {
   timestamp: string;
   id_atm?: number; // solo nelle ricariche
   type: MovimentoType;
-  from: any;
-  from_name: any;
+  from?: any; // solo nelle pagamento
+  from_name?: any; // solo nelle pagamento
   to: number;
   to_name: string;
 }

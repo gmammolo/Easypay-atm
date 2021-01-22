@@ -50,7 +50,9 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getMovimenti(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.movimenti, {params: {conto, direction, from, to}});
+    return this.http.get<ApiMovimento[]>(ApiRoute.movimenti, {params: {conto, direction, from, to}}).pipe(
+      map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
+    );
   }
 
   /**
@@ -61,7 +63,9 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getRicariche(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.ricariche, {params: {conto, direction, from, to}});
+    return this.http.get<ApiMovimento[]>(ApiRoute.ricariche, {params: {conto, direction, from, to}}).pipe(
+      map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
+    );
   }
 
   /**
@@ -72,6 +76,19 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getPagamenti(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.pagamenti, {params: {conto, direction, from, to}});
+    return this.http.get<ApiMovimento[]>(ApiRoute.pagamenti, {params: {conto, direction, from, to}}).pipe(
+      map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
+    );
+  }
+
+  /** ripulisce la risposta di un movimento dal BE e restituisce un Movimento da usare */
+  private cleanMovimento(apiMov: ApiMovimento): Movimento {
+    return {
+      ...apiMov,
+      id: apiMov.id + '',
+      id_atm: apiMov.id_atm + '',
+      from: apiMov.from + '',
+      to: apiMov.to + '',
+    };
   }
 }
