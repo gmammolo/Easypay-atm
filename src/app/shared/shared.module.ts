@@ -18,6 +18,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import { CoreModule } from '../core/core.module';
 import { BannerComponent } from './components/banner/banner.component';
@@ -90,6 +91,7 @@ import { InfoAtmComponent } from './info-atm/info-atm.component';
     MatToolbarModule,
     MatMenuModule,
     MatIconModule,
+    MatAutocompleteModule,
     MatTableModule,
   ],
   exports: [
@@ -120,6 +122,7 @@ import { InfoAtmComponent } from './info-atm/info-atm.component';
     MatToolbarModule,
     MatMenuModule,
     MatIconModule,
+    MatAutocompleteModule,
     MatTableModule,
   ],
   entryComponents: [JoinPart0Component, JoinPart1Component, JoinPart2Component, JoinPart3Component, InfoDialogComponent, InfoAtmComponent],

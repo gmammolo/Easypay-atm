@@ -29,7 +29,7 @@ export function isPhone(control: AbstractControl): { [key: string]: boolean } {
   const errorCode = 'isPhone';
   if (control && control.value) {
     const phone = control.value;
-    const test = new RegExp('\+\d{12}').test(phone);
+    const test = new RegExp('^[0-9]{2}[/][0-9]{2}[/](?:(?:[1][9][0-9]{2})|(?:[2][0][0-9]{2}))$').test(phone);
     return test ? { [errorCode]: true }  : null;
 
   }
@@ -60,10 +60,10 @@ export function haveLowercase(control: AbstractControl): { [key: string]: boolea
 
 /** Verifica se è presente almeno un valore numerico */
 export function haveDigit(control: AbstractControl): { [key: string]: boolean } {
-  const errorCode = 'notHaveUppercase';
+  const errorCode = 'notHaveDigit';
   if (control && control.value) {
     const password = control.value;
-    const test = new RegExp('\d+', 'g').test(password);
+    const test = new RegExp('[0-9]+', 'g').test(password);
     return !test ? { [errorCode]: true }  : null;
   }
   return null;
@@ -76,7 +76,7 @@ export function haveSpace(control: AbstractControl): { [key: string]: boolean } 
     const password = control.value;
     // \S+ matches any non-whitespace character (equal to [^\r\n\t\f\v ])
     const test = new RegExp('^\S+$', 'g').test(password);
-    return !test ? { [errorCode]: true }  : null;
+    return test ? { [errorCode]: true }  : null;
   }
   return null;
 }
