@@ -18,7 +18,7 @@ export class NominatimService {
   constructor(private http: HttpClient) { }
 
   public searchAddress(address: string, format = 'json', limit= 5, key = 'O8NebVs6bskCvb2E4bHdHqvgq6WNHZih' ): Observable<Nominatim[]> {
-    return this.http.get<ApiGetNominatim[]>('http://open.mapquestapi.com/nominatim/v1/search.php', {params: {
+    return this.http.get<ApiGetNominatim[]>('https://open.mapquestapi.com/nominatim/v1/search.php', {params: {
       q: `[${address}]`,
       key,
       format,
