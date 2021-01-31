@@ -1,5 +1,11 @@
 import { MovimentoType } from '../constants/movimento-type.enum';
 
+export interface ApiGetMovimenti {
+  saldo: number;
+  budget: number;
+  movimenti: ApiMovimento[];
+}
+
 export interface ApiMovimento {
   id: number;
   valore: number;

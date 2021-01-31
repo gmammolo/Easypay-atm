@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiRoute } from '../constants/routing.constants';
-import { ApiMovimento } from '../api-models/api-movimento.model';
+import { ApiGetMovimenti, ApiMovimento } from '../api-models/api-movimento.model';
 import { Movimento } from 'src/app/shared/models/movimento.model';
 
 @Injectable({
@@ -50,7 +50,8 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getMovimenti(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.movimenti, {params: {conto, direction, from, to}}).pipe(
+    return this.http.get<ApiGetMovimenti>(ApiRoute.movimenti, {params: {conto, direction, from, to}}).pipe(
+      map(result => result.movimenti),
       map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
     );
   }
@@ -63,7 +64,8 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getRicariche(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.ricariche, {params: {conto, direction, from, to}}).pipe(
+    return this.http.get<ApiGetMovimenti>(ApiRoute.ricariche, {params: {conto, direction, from, to}}).pipe(
+      map(result => result.movimenti),
       map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
     );
   }
@@ -76,7 +78,8 @@ export class MovimentoService {
    * @param to data di fine periodo di ricerca (AAAA-MM-GG)
    */
   getPagamenti(conto: string, direction: string= '', from: string= '', to: string= ''): Observable<Movimento[]> {
-    return this.http.get<ApiMovimento[]>(ApiRoute.pagamenti, {params: {conto, direction, from, to}}).pipe(
+    return this.http.get<ApiGetMovimenti>(ApiRoute.pagamenti, {params: {conto, direction, from, to}}).pipe(
+      map(result => result.movimenti),
       map(apiMovis => apiMovis.map(apiMov => this.cleanMovimento(apiMov)) )
     );
   }
