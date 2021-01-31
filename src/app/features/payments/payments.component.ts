@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { asyncScheduler, forkJoin, scheduled, Subject } from 'rxjs';
+import { asyncScheduler, forkJoin, scheduled, Subject, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
@@ -23,7 +23,7 @@ export interface DialogData {
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.scss'],
 })
-export class PaymentsComponent implements OnInit, AfterViewInit {
+export class PaymentsComponent implements OnInit, AfterViewInit, OnDestroy {
   public a = new Subject<Utente>();
   public b = new Subject<{ price: string; date: string; invoice: string }>();
 
@@ -34,22 +34,25 @@ export class PaymentsComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog
   ) {}
 
+  private subscriptions: Subscription[] = [];
+
   ngOnInit(): void {
     if (!this.selfStore.email || !this.selfStore.budget) {
-      scheduled([
-        this.utenteService.getSelfUtente(),
-        this.utenteService.getSelfConto(),
-      ], asyncScheduler).pipe(
-        mergeAll(),
-        map((element) => {
-          if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Utente);
-          } else if (this.isSelfConto(element)) {
-            this.selfStore.updateConto(element as Conto);
-          }
-        })
-      )
-      .subscribe(() => this.handleCustomerPermission());
+      this.subscriptions.push(
+        scheduled([
+          this.utenteService.getSelfUtente(),
+          this.utenteService.getSelfConto(),
+        ], asyncScheduler).pipe(
+          mergeAll(),
+          map((element) => {
+            if (this.isSelfCliente(element)) {
+              this.selfStore.updateCliente(element as Utente);
+            } else if (this.isSelfConto(element)) {
+              this.selfStore.updateConto(element as Conto);
+            }
+          })
+        )
+        .subscribe(() => this.handleCustomerPermission()));
     } else {
       this.handleCustomerPermission();
     }
@@ -58,6 +61,10 @@ export class PaymentsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.routingService.updateHeader('Pagamento');
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   authClientStatus(cliente: Utente) {

@@ -1,6 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 import { MovimentoService } from 'src/app/core/services/movimento.service';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
@@ -13,11 +14,13 @@ import { DialogData } from '../../payments.component';
   templateUrl: './dialog-payment.component.html',
   styleUrls: ['./dialog-payment.component.scss']
 })
-export class DialogPaymentComponent {
+export class DialogPaymentComponent implements OnDestroy {
 
 
   public cliente: Utente;
   public priceInfo: DialogData['priceInfo'];
+  
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<DialogPaymentComponent>,
@@ -31,23 +34,28 @@ export class DialogPaymentComponent {
     this.priceInfo = data.priceInfo;
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   completePayment() {
-    this.movimentoService
-      .pagamento(this.cliente.idConto, this.selfStore.idConto, this.priceInfo.price)
-      .subscribe(() => {
-        // pagamento avvenuto con successo
-        this.openSnackBar('pagamento effettuato con successo', 'success');
-      },
-      (error) => {
-        // errore nel pagamento
-        this.openSnackBar('pagamento fallito', 'failure');
-        console.error(error);
-      },
-      // complete
-      () => {
-        this.dialogRef.close();
-        this.routingService.gotoHome();
-      });
+    this.subscriptions.push(
+      this.movimentoService
+        .pagamento(this.cliente.idConto, this.selfStore.idConto, this.priceInfo.price)
+        .subscribe(() => {
+          // pagamento avvenuto con successo
+          this.openSnackBar('pagamento effettuato con successo', 'success');
+        },
+        (error) => {
+          // errore nel pagamento
+          this.openSnackBar('pagamento fallito', 'failure');
+          console.error(error);
+        },
+        // complete
+        () => {
+          this.dialogRef.close();
+          this.routingService.gotoHome();
+        }));
   }
 
   undo() {

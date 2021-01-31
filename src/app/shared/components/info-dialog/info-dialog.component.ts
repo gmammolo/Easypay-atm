@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { asyncScheduler, scheduled } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { asyncScheduler, scheduled, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
@@ -13,27 +13,34 @@ import { UtenteService } from 'src/app/core/services/utente.service';
   templateUrl: './info-dialog.component.html',
   styleUrls: ['./info-dialog.component.scss']
 })
-export class InfoDialogComponent implements OnInit {
+export class InfoDialogComponent implements OnInit, OnDestroy {
+
+  private subscriptions: Subscription[] = [];
 
   constructor(public selfStore: SelfStore, private utenteService: UtenteService, private routingService: RoutingService) { }
 
   ngOnInit(): void {
     if (!this.selfStore.email || !this.selfStore.budget) {
-      scheduled([
-        this.utenteService.getSelfUtente(),
-        this.utenteService.getSelfConto(),
-      ], asyncScheduler).pipe(
-        mergeAll(),
-        map((element) => {
-          if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Utente);
-          } else if (this.isSelfConto(element)) {
-            this.selfStore.updateConto(element as Conto);
-          }
-        })
-      )
-      .subscribe(() => this.handleCustomerPermission());
+      this.subscriptions.push(
+        scheduled([
+          this.utenteService.getSelfUtente(),
+          this.utenteService.getSelfConto(),
+        ], asyncScheduler).pipe(
+          mergeAll(),
+          map((element) => {
+            if (this.isSelfCliente(element)) {
+              this.selfStore.updateCliente(element as Utente);
+            } else if (this.isSelfConto(element)) {
+              this.selfStore.updateConto(element as Conto);
+            }
+          })
+        )
+        .subscribe(() => this.handleCustomerPermission()));
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   /** verifica che il cliente sia un mercante */

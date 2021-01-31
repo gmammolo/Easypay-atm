@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { NominatimService } from 'src/app/core/services/nominatim.service';
 import { isBorn, isOver18, isPhone } from 'src/app/core/utils/custom-validator';
 import { Nominatim } from 'src/app/shared/models/nominatim.model';
@@ -11,9 +11,11 @@ import { AbstractJoinPartComponent } from '../abstract-join-part/abstract-join-p
   templateUrl: './join-part1.component.html',
   styleUrls: ['./join-part1.component.scss'],
 })
-export class JoinPart1Component extends AbstractJoinPartComponent  implements OnInit {
+export class JoinPart1Component extends AbstractJoinPartComponent  implements OnInit, OnDestroy {
 
   addressOptions$: BehaviorSubject<Nominatim[]> = new BehaviorSubject(undefined);
+
+  private subscriptions: Subscription[] = [];
 
   constructor(private fb: FormBuilder, private nominatimService: NominatimService) {
     super();
@@ -28,13 +30,18 @@ export class JoinPart1Component extends AbstractJoinPartComponent  implements On
   }
 
   ngOnInit(): void {
+    this.subscriptions.push(
     this.formCrl.controls.address.valueChanges.subscribe(
       (value: string) => {
         if (value) {
-          this.nominatimService.searchAddress(value).subscribe(addresses => this.addressOptions$.next(addresses));
+          this.subscriptions.push(this.nominatimService.searchAddress(value).subscribe(addresses => this.addressOptions$.next(addresses)));
         }
       }
-    );
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   getValue() {

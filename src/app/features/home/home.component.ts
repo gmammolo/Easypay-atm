@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { asyncScheduler, scheduled } from 'rxjs';
+import { asyncScheduler, scheduled, Subscription } from 'rxjs';
 import { mergeAll, map } from 'rxjs/operators';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
@@ -20,7 +20,7 @@ import { UtenteService } from 'src/app/core/services/utente.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   readonly buttonWidth = '400px';
   readonly buttonHeight = '250px';
 
@@ -29,6 +29,8 @@ export class HomeComponent implements OnInit {
     verticalPosition: 'top' as MatSnackBarVerticalPosition,
     panelClass: 'toast-warning',
   };
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private routingService: RoutingService,
@@ -41,23 +43,28 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.routingService.updateHeader('Home');
     if (!this.selfStore.email || !this.selfStore.budget) {
-      scheduled([
-        this.utenteService.getSelfUtente(),
-        this.utenteService.getSelfConto(),
-      ], asyncScheduler).pipe(
-        mergeAll(),
-        map((element) => {
-          if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Utente);
-          } else if (this.isSelfConto(element)) {
-            this.selfStore.updateConto(element as Conto);
-          }
-        })
-      )
-      .subscribe(() => this.handleCustomerPermission());
+      this.subscriptions.push(
+        scheduled([
+          this.utenteService.getSelfUtente(),
+          this.utenteService.getSelfConto(),
+        ], asyncScheduler).pipe(
+          mergeAll(),
+          map((element) => {
+            if (this.isSelfCliente(element)) {
+              this.selfStore.updateCliente(element as Utente);
+            } else if (this.isSelfConto(element)) {
+              this.selfStore.updateConto(element as Conto);
+            }
+          })
+        )
+        .subscribe(() => this.handleCustomerPermission()));
     } else {
       this.handleCustomerPermission();
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   gotoPayment() {
