@@ -29,9 +29,10 @@ export class MovimentoService {
   }
 
   /** effettua un movimento di caricamento sul cliente indicato da idCliente */
-  ricarica(idContoCliente: string, idContoCommerciante: string, prezzo: string) {
+  ricarica(idContoCliente: string, idAtm: string, prezzo: string) {
+
     const params = {
-      from: idContoCommerciante,
+      id_atm: idAtm,
       to: idContoCliente,
       value: prezzo,
     };

@@ -38,9 +38,11 @@ export class DialogRechargeComponent implements OnDestroy {
   }
 
   completeRecharge() {
+    /** idAtm hardcodato in quanto abbiamo un solo atm per ora */
+    const idAtm = '1';
     this.subscriptions.push(
       this.movimentoService
-        .ricarica(this.cliente.idConto, this.selfStore.idConto, this.priceInfo.price)
+        .ricarica(this.cliente.idConto, idAtm, this.priceInfo.price)
         .subscribe(() => {
           // ricarica avvenuto con successo
           this.openSnackBar('ricarica effettuata con successo', 'success');
