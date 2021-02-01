@@ -27,6 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
           console.error('Token di accesso scaduto, logout!');
           this.authStore.token = undefined;
           this.router.navigate([]);
+          window.location.reload();
         }
         return throwError(error);
       })
