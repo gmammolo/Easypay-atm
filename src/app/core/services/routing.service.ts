@@ -21,6 +21,10 @@ export class RoutingService {
     this.activeSection$.next(text);
   }
 
+  gotoBase() {
+    this.router.navigate([RoutersPath.base]);
+  }
+
   gotoHome() {
     this.router.navigate([RoutersPath.home]);
   }

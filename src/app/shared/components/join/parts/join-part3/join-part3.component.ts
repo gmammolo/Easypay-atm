@@ -39,7 +39,7 @@ export class JoinPart3Component implements OnInit, OnDestroy {
         next: () => {
           this.status = StatusEnum.success;
           this.snackBar.open('Account creato correttamente!', 'ok', this.toastConfig);
-          this.routingService.gotoHome();
+          this.routingService.gotoBase();
           // setInterval(() => this.ngZone.run(() =>  this.routingService.gotoHome()), 2000);
         },
         error: () => this.status = StatusEnum.failed
