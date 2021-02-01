@@ -1,4 +1,4 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 // NOTA: apparentemente la risposta { [errorName]: false } viene cmq bloccata dal validatore.
 // Trick Solution: in caso di validatore corretto passo null.
 
@@ -81,6 +81,15 @@ export function haveSpace(control: AbstractControl): { [key: string]: boolean } 
   return null;
 }
 
+export function checkPasswords(group: FormGroup) {
+  const password = group.get('password').value;
+  const confirmPassword = group.get('confirmPassword').value;
+
+  return password === confirmPassword ? null : { notSame: true };
+}
+
+
+
 
 /**
  * funzione che restituisce gli anni dell' utente
@@ -89,9 +98,10 @@ export function haveSpace(control: AbstractControl): { [key: string]: boolean } 
  */
 function getBirthday(bornDate: Date): number {
   const ageDifMs = Date.now() - bornDate.getTime();
-  if(ageDifMs < 0) {
+  if (ageDifMs < 0) {
     return -1;
   }
   const ageDate = new Date(ageDifMs); // miliseconds from epoch
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+

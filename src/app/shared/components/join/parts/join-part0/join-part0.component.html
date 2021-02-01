@@ -39,5 +39,17 @@
       La password non può contenere spazi o tabulazioni
     </mat-error>
   </mat-form-field>
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      type="password"
+      placeholder="conferma password*"
+      formControlName="confirmPassword"
+      [errorStateMatcher]="matcher"
+    />
+    <mat-error *ngIf="formCrl.controls['confirmPassword'].hasError('required') || formCrl.hasError('notSame')">
+      deve essere uguale alla password
+    </mat-error>
+  </mat-form-field>
 </div>
 </form>

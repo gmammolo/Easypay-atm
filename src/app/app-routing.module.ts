@@ -19,7 +19,7 @@ const routes: Routes = [
       {
         path: RoutersPath.base,
         redirectTo: '/login',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: RoutersPath.home,
@@ -46,7 +46,7 @@ const routes: Routes = [
         component: MovementsComponent,
         canActivate: [AuthGuard],
       },
-    ]
+    ],
   }
 ];
 
