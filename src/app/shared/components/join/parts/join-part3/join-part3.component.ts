@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { UtenteService } from 'src/app/core/services/utente.service';
@@ -23,7 +23,7 @@ export class JoinPart3Component implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private utenteService: UtenteService, private routingService: RoutingService) { }
+  constructor(private utenteService: UtenteService, private routingService: RoutingService, private ngZone: NgZone) { }
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -31,7 +31,7 @@ export class JoinPart3Component implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.status = StatusEnum.success;
-          setInterval(() => this.routingService.gotoHome(), 2000);
+          setInterval(() => this.ngZone.run(() =>  this.routingService.gotoHome()), 2000);
         },
         error: () => this.status = StatusEnum.failed
       }));
