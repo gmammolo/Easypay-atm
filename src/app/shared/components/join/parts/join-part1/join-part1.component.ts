@@ -53,9 +53,9 @@ export class JoinPart1Component extends AbstractJoinPartComponent  implements On
       birth_date: this.formCrl.controls.bornDate.value,
       phone: this.formCrl.controls.phone.value,
       address: this.formCrl.controls.address.value,
-      place_id: nominatim.place_id,
-      lat: nominatim.lat,
-      lon: nominatim.lon,
+      // place_id: nominatim.place_id,
+      latitudine: nominatim.lat,
+      longitudine: nominatim.lon,
     };
   }
 }
