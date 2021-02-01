@@ -38,4 +38,8 @@ export class MovementsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  isReceipt(movimento: Movimento): boolean {
+    return movimento.type === MovimentoType.ricarica || movimento.to === this.selfStore.idConto;
+  }
+
 }
