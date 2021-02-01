@@ -68,7 +68,11 @@ module.exports = function (app) {
 ]
 
   app.get("/api/movimenti", (req, res, next) => {
-    res.json(movimenti);
+    res.json({
+        idConto: 20,
+        saldo: 30,
+        movimenti,
+    });
   });
 
 }
