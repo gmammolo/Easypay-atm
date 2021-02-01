@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ClienteService } from 'src/app/core';
-import { RoutingService } from 'src/app/core/services/routing.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
 enum StatusEnum {
   waiting = 'waiting',
@@ -13,24 +14,41 @@ enum StatusEnum {
   templateUrl: './join-part3.component.html',
   styleUrls: ['./join-part3.component.scss']
 })
-export class JoinPart3Component implements OnInit {
+export class JoinPart3Component implements OnInit, OnDestroy {
   readonly StatusEnum = StatusEnum;
 
   @Input() data: any;
 
   status = StatusEnum.waiting;
 
-  constructor(private clienteService: ClienteService, private routingService: RoutingService) { }
+  private subscriptions: Subscription[] = [];
+
+  private readonly toastConfig = {
+    horizontalPosition: 'center' as MatSnackBarHorizontalPosition,
+    verticalPosition: 'top' as MatSnackBarVerticalPosition,
+    panelClass: '',
+  };
+
+  constructor(private utenteService: UtenteService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.clienteService.register(this.data)
-    .subscribe({
-      next: () => {
-        this.status = StatusEnum.success;
-        setInterval(() => this.routingService.gotoHome(), 2000);
-      },
-      error: () => this.status = StatusEnum.failed
-    });
+    this.subscriptions.push(
+      this.utenteService.register(this.data)
+      .subscribe({
+        next: () => {
+          this.status = StatusEnum.success;
+          this.snackBar.open('Account creato correttamente!', 'ok', {...this.toastConfig, panelClass: 'toast-success'});
+
+        },
+        error: () => {
+          this.snackBar.open('Registrazione fallita!', 'indietro',  {...this.toastConfig, panelClass: 'toast-error'});
+          this.status = StatusEnum.failed;
+        }
+      }));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

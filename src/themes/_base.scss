@@ -32,7 +32,7 @@ mat-form-field {
   color: #000;
 
   .mat-button {
-    color: yellow;
+    color: rgb(14, 167, 121);
   }
 
 }
@@ -42,7 +42,18 @@ mat-form-field {
   color: #000;
 
   .mat-button {
-    color: #f00000;
+    color: #be7abe;
   }
 
 }
+
+.toast-success {
+  background-color: #4adb4a;
+  color: #000;
+
+  .mat-button {
+    color: #eb4343;
+  }
+
+}
+

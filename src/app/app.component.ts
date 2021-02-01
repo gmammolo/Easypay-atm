@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { LoadingStatus, LoaderService } from './core';
+import { LoaderService, LoadingStatus } from './core/services/loader.service';
 
 @Component({
   selector: 'app-root',

@@ -1,49 +1,52 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { asyncScheduler, forkJoin, scheduled, Subject } from 'rxjs';
+import { asyncScheduler, forkJoin, scheduled, Subject, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
-import { ClienteService } from 'src/app/core';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
-import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Utente } from 'src/app/shared/models/utente.model';
 import { Conto } from 'src/app/shared/models/conto.model';
 
 import { DialogRechargeComponent } from './components/dialog-recharge/dialog-recharge.component';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
 @Component({
   selector: 'app-recharge',
   templateUrl: './recharge.component.html',
   styleUrls: ['./recharge.component.scss']
 })
-export class RechargeComponent implements OnInit, AfterViewInit {
+export class RechargeComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  public a = new Subject<Cliente>();
+  public a = new Subject<Utente>();
   public b = new Subject<{ price: string; date: string; invoice: string }>();
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private routingService: RoutingService,
     public selfStore: SelfStore,
-    private clienteService: ClienteService,
+    private utenteService: UtenteService,
     private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
     if (!this.selfStore.email || !this.selfStore.budget) {
-      scheduled([
-        this.clienteService.getSelfClient(),
-        this.clienteService.getSelfConto(),
-      ], asyncScheduler).pipe(
-        mergeAll(),
-        map((element) => {
-          if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Cliente);
-          } else if (this.isSelfConto(element)) {
-            this.selfStore.updateConto(element as Conto);
-          }
-        })
-      )
-      .subscribe(() => this.handleCustomerPermission());
+      this.subscriptions.push(
+        scheduled([
+          this.utenteService.getSelfUtente(),
+          this.utenteService.getSelfConto(),
+        ], asyncScheduler).pipe(
+          mergeAll(),
+          map((element) => {
+            if (this.isSelfCliente(element)) {
+              this.selfStore.updateCliente(element as Utente);
+            } else if (this.isSelfConto(element)) {
+              this.selfStore.updateConto(element as Conto);
+            }
+          })
+        )
+        .subscribe(() => this.handleCustomerPermission()));
     } else {
       this.handleCustomerPermission();
     }
@@ -54,7 +57,11 @@ export class RechargeComponent implements OnInit, AfterViewInit {
     this.routingService.updateHeader('Ricarica');
   }
 
-  authClientStatus(cliente: Cliente) {
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  authClientStatus(cliente: Utente) {
     this.a.next(cliente);
     this.a.complete();
   }
@@ -65,14 +72,15 @@ export class RechargeComponent implements OnInit, AfterViewInit {
   }
 
   completeRecharge() {
-    forkJoin({ cliente: this.a, priceInfo: this.b }).subscribe(
-      ({ cliente, priceInfo }) => {
-        this.dialog.open(DialogRechargeComponent, {
-          data: { cliente, priceInfo },
-          disableClose: true,
-        });
-      }
-    );
+    this.subscriptions.push(
+      forkJoin({ cliente: this.a, priceInfo: this.b }).subscribe(
+        ({ cliente, priceInfo }) => {
+          this.dialog.open(DialogRechargeComponent, {
+            data: { cliente, priceInfo },
+            disableClose: true,
+          });
+        }
+      ));
   }
 
   /** verifica che il cliente sia un mercante */

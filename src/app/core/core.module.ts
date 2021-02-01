@@ -8,7 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthGuard } from './guards/auth-guard.service';
 import { NoLoginGuard } from './guards/no-login-guard.service';
 import { httpInterceptorProviders } from './http-interceptors/auth.interceptor';
-import { ClienteService } from './services/cliente.service';
+import { UtenteService } from './services/utente.service';
 import { LoaderService } from './services/loader.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { RoutingService } from './services/routing.service';
@@ -34,7 +34,7 @@ export class CoreModule {
     return {
       ngModule: CoreModule,
       providers: [
-        ClienteService,
+        UtenteService,
         RoutingService,
         AuthGuard,
         NoLoginGuard,

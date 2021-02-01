@@ -1,22 +1,25 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MovimentoService } from 'src/app/core';
+import { Subscription } from 'rxjs';
+import { MovimentoService } from 'src/app/core/services/movimento.service';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
 import { DialogData } from 'src/app/features/payments/payments.component';
-import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Utente } from 'src/app/shared/models/utente.model';
 
 @Component({
   selector: 'app-dialog-recharge',
   templateUrl: './dialog-recharge.component.html',
   styleUrls: ['./dialog-recharge.component.scss']
 })
-export class DialogRechargeComponent {
+export class DialogRechargeComponent implements OnDestroy {
 
 
-  public cliente: Cliente;
+  public cliente: Utente;
   public priceInfo: DialogData['priceInfo'];
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<DialogRechargeComponent>,
@@ -30,23 +33,30 @@ export class DialogRechargeComponent {
     this.priceInfo = data.priceInfo;
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   completeRecharge() {
-    this.movimentoService
-      .ricarica(this.cliente.idConto, this.selfStore.idConto, this.priceInfo.price)
-      .subscribe(() => {
-        // ricarica avvenuto con successo
-        this.openSnackBar('ricarica effettuata con successo', 'success');
-      },
-      (error) => {
-        // errore nel ricarica
-        this.openSnackBar('ricarica fallita', 'failure');
-        console.error(error);
-      },
-      // complete
-      () => {
-        this.dialogRef.close();
-        this.routingService.gotoHome();
-      });
+    /** idAtm hardcodato in quanto abbiamo un solo atm per ora */
+    const idAtm = '1';
+    this.subscriptions.push(
+      this.movimentoService
+        .ricarica(this.cliente.idConto, idAtm, this.priceInfo.price)
+        .subscribe(() => {
+          // ricarica avvenuto con successo
+          this.openSnackBar('ricarica effettuata con successo', 'success');
+        },
+        (error) => {
+          // errore nel ricarica
+          this.openSnackBar('ricarica fallita', 'failure');
+          console.error(error);
+        },
+        // complete
+        () => {
+          this.dialogRef.close();
+          this.routingService.gotoHome();
+        }));
   }
 
   undo() {
@@ -59,7 +69,7 @@ export class DialogRechargeComponent {
       // verticalPosition: MatSnackBarVerticalPosition,
       // horizontalPosition: MatSnackBarHorizontalPosition,
       panelClass: ['rechargetost', cssClass],
-      //duration: 10000,
+      // duration: 10000,
     });
   }
 }

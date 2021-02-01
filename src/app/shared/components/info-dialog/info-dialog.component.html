@@ -22,7 +22,7 @@
       <div class="info--email value">{{selfStore.email}}</div>
       <div class="info--rag value">{{selfStore.ragSociale}}</div>
       <div class="info--piva value">{{selfStore.pIva}}</div>
-      <div class="info--addr value">{{selfStore.address || '-'}}</div>
+      <div class="info--addr value">{{((selfStore.address.length >= 60) ? (selfStore.address | slice:0:60) + '...' : selfStore.address)  || '-'}}</div>
       <div class="info--phone value">{{selfStore.phone || '-'}}</div>
       <div class="info--conto value">{{selfStore.idConto || '-'}}</div>
       <div class="info--saldo value">{{selfStore.saldo || '-'}}</div>

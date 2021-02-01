@@ -69,7 +69,12 @@
 
     <div class="flex-element">
       <mat-form-field>
-        <input matInput placeholder="indirizzo" formControlName="address" />
+        <input matInput placeholder="indirizzo" formControlName="address" [matAutocomplete]="auto"/>
+        <mat-autocomplete #auto="matAutocomplete" panelWidth="600px">
+          <mat-option *ngFor="let option of (addressOptions$ | async)" [value]="option.display_name">
+            {{option.display_name}}
+          </mat-option>
+        </mat-autocomplete>
         <mat-error *ngIf="formCrl.controls['address'].hasError('required')">
           address <strong>obbligatorio</strong>
         </mat-error>

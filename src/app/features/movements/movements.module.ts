@@ -4,10 +4,11 @@ import { MovementsComponent } from './movements.component';
 import { CoreModule } from 'src/app/core/core.module';
 import { SharedModule } from 'src/app/shared';
 import {MatTableModule} from '@angular/material/table';
+import { AtmNamePipe } from './pipes/atm-name.pipe';
 
 
 @NgModule({
-  declarations: [MovementsComponent],
+  declarations: [MovementsComponent, AtmNamePipe],
   imports: [
     CommonModule,
     CoreModule,

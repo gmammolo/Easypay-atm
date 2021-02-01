@@ -1,4 +1,4 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 // NOTA: apparentemente la risposta { [errorName]: false } viene cmq bloccata dal validatore.
 // Trick Solution: in caso di validatore corretto passo null.
 
@@ -29,7 +29,7 @@ export function isPhone(control: AbstractControl): { [key: string]: boolean } {
   const errorCode = 'isPhone';
   if (control && control.value) {
     const phone = control.value;
-    const test = new RegExp('\+\d{12}').test(phone);
+    const test = new RegExp('^[0-9]{2}[/][0-9]{2}[/](?:(?:[1][9][0-9]{2})|(?:[2][0][0-9]{2}))$').test(phone);
     return test ? { [errorCode]: true }  : null;
 
   }
@@ -60,10 +60,10 @@ export function haveLowercase(control: AbstractControl): { [key: string]: boolea
 
 /** Verifica se è presente almeno un valore numerico */
 export function haveDigit(control: AbstractControl): { [key: string]: boolean } {
-  const errorCode = 'notHaveUppercase';
+  const errorCode = 'notHaveDigit';
   if (control && control.value) {
     const password = control.value;
-    const test = new RegExp('\d+', 'g').test(password);
+    const test = new RegExp('[0-9]+', 'g').test(password);
     return !test ? { [errorCode]: true }  : null;
   }
   return null;
@@ -76,10 +76,19 @@ export function haveSpace(control: AbstractControl): { [key: string]: boolean } 
     const password = control.value;
     // \S+ matches any non-whitespace character (equal to [^\r\n\t\f\v ])
     const test = new RegExp('^\S+$', 'g').test(password);
-    return !test ? { [errorCode]: true }  : null;
+    return test ? { [errorCode]: true }  : null;
   }
   return null;
 }
+
+export function checkPasswords(group: FormGroup) {
+  const password = group.get('password').value;
+  const confirmPassword = group.get('confirmPassword').value;
+
+  return password === confirmPassword ? null : { notSame: true };
+}
+
+
 
 
 /**
@@ -89,9 +98,10 @@ export function haveSpace(control: AbstractControl): { [key: string]: boolean } 
  */
 function getBirthday(bornDate: Date): number {
   const ageDifMs = Date.now() - bornDate.getTime();
-  if(ageDifMs < 0) {
+  if (ageDifMs < 0) {
     return -1;
   }
   const ageDate = new Date(ageDifMs); // miliseconds from epoch
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+

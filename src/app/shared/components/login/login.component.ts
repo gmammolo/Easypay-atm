@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatSnackBar,
@@ -9,7 +9,8 @@ import {
   TextOnlySnackBar,
 } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { RoutersPath } from 'src/app/core';
+import { Subscription } from 'rxjs';
+import { RoutersPath } from 'src/app/core/constants/routing.constants';
 import { LoginService } from 'src/app/features/login-page/services/login.service';
 
 @Component({
@@ -17,13 +18,14 @@ import { LoginService } from 'src/app/features/login-page/services/login.service
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   /** controller del form */
   formCrl: FormGroup;
 
   @Output() joinRequest = new EventEmitter<void>();
 
   private errorToastRef: MatSnackBarRef<TextOnlySnackBar> = null;
+  private subscriptions: Subscription[] = [];
 
   private readonly toastConfig = {
     horizontalPosition: 'center' as MatSnackBarHorizontalPosition,
@@ -49,35 +51,41 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   login() {
-    this.loginService
-      .getToken(this.formCrl.value.email, this.formCrl.value.password)
-      .subscribe(
-        (token) => {
-          if (this.errorToastRef) {
-            this.errorToastRef.dismiss();
-          }
-          return this.router.navigate([RoutersPath.home], {});
-        },
-        (error: HttpErrorResponse) => {
-          if (error && error.status) {
-            if (error.status === 401) {
-                this.errorToastRef = this.snackBar.open(
-                'Dati per il login errati!',
+    this.subscriptions.push(
+      this.loginService
+        .getToken(this.formCrl.value.email, this.formCrl.value.password)
+        .subscribe(
+          (token) => {
+            if (this.errorToastRef) {
+              this.errorToastRef.dismiss();
+            }
+            return this.router.navigate([RoutersPath.home], {});
+          },
+          (error: HttpErrorResponse) => {
+            if (error && error.status) {
+              if (error.status === 401) {
+                  this.errorToastRef = this.snackBar.open(
+                  'Dati per il login errati!',
+                  'Undo',
+                  this.toastConfig
+                );
+              }
+            } else {
+              console.error(error);
+              this.snackBar.open(
+                'Errore generico durante il login!',
                 'Undo',
                 this.toastConfig
               );
             }
-          } else {
-            console.error(error);
-            this.snackBar.open(
-              'Errore generico durante il login!',
-              'Undo',
-              this.toastConfig
-            );
           }
-        }
-      );
+        )
+    );
   }
 
   join() {

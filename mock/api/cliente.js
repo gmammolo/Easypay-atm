@@ -81,23 +81,26 @@ module.exports = function (app) {
     res.json(users.find(user => user.id === 4 ));
   });
 
-  app.get("/api/clienti/:id", (req, res, next) => {
+  app.get('/api/clienti/:id', (req, res, next) => {
     const otp = req.query.opt;
     const pin = req.query.pin;
-    const validUsers = users.filter(user => user.id+"" === req.params.id && ( user.otp === otp || user.pin === pin));
-    if(validUsers.length >= 1) {
-      res.json(validUsers[0]);
+    const user = users.find((user) => user.id + '' === req.params.id);
+    if (!user) {
+      return res.status(404).json({
+        type: 'NO_COUNT',
+        message: "Cliente not found with id : '4'",
+        timestamp: 1611268454561,
+      });
+    } else if (user.otp === otp || user.pin === pin || (!otp && !pin)) {
+      return res.json(user);
     } else {
-      res.status(400);
-      res.json(
-        {
-          "type": "INVALID_REQUEST",
-          "message": "Invalid request",
-          "timestamp": 1610107795531
-        }
-      )
+      // id giusto ma pin sbagliato
+      return res.status(400).json({
+        type: 'INVALID_REQUEST',
+        message: 'Invalid request',
+        timestamp: 1610107795531,
+      });
     }
-
   });
 
 

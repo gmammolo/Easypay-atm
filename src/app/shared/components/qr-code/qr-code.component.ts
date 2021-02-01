@@ -2,9 +2,9 @@ import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/cor
 import { BarcodeFormat } from '@zxing/library';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BehaviorSubject } from 'rxjs';
-import { ClienteService } from 'src/app/core';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
-import { Cliente } from '../../models/cliente.model';
+import { Utente } from '../../models/utente.model';
 
 @Component({
   selector: 'app-qr-code',
@@ -25,19 +25,19 @@ export class QrCodeComponent implements OnInit {
   @ViewChild(ZXingScannerComponent)
   scanner: ZXingScannerComponent;
 
-  @Output() clientAuthEvent = new EventEmitter<Cliente>();
+  @Output() clientAuthEvent = new EventEmitter<Utente>();
 
   /** determina se è riuscito ad aprire o meno lo scanner */
   statusScanner$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private clienteService: ClienteService) { }
+  constructor(private utenteService: UtenteService) { }
 
   ngOnInit() { }
 
   /** alla lettura dello stato prova ad effettuare il login */
   scanSuccessHandler(token: string) {
     this.scanner.enable = false;
-    this.clienteService.getClienteByTokenOtp(token).subscribe(
+    this.utenteService.getUtenteByTokenOtp(token).subscribe(
       cliente => {
         console.warn(cliente);
         this.clientAuthEvent.emit(cliente)},

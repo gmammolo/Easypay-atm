@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RoutersPath } from './core/constants/routing.constants';
 
-import { RoutersPath } from './core';
 import { AuthGuard } from './core/guards/auth-guard.service';
 import { NoLoginGuard } from './core/guards/no-login-guard.service';
 import { HomeComponent } from './features/home/home.component';
@@ -19,7 +19,7 @@ const routes: Routes = [
       {
         path: RoutersPath.base,
         redirectTo: '/login',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: RoutersPath.home,
@@ -46,7 +46,7 @@ const routes: Routes = [
         component: MovementsComponent,
         canActivate: [AuthGuard],
       },
-    ]
+    ],
   }
 ];
 

@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { asyncScheduler, scheduled } from 'rxjs';
+import { asyncScheduler, scheduled, Subscription } from 'rxjs';
 import { mergeAll, map } from 'rxjs/operators';
-import { ClienteService } from 'src/app/core';
 import { UtenteType } from 'src/app/core/constants/utente-type.enum';
 import { RoutingService } from 'src/app/core/services/routing.service';
 import { SelfStore } from 'src/app/core/store/self.store';
 import { InfoDialogComponent } from 'src/app/shared/components/info-dialog/info-dialog.component';
-import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Utente } from 'src/app/shared/models/utente.model';
 import { Conto } from 'src/app/shared/models/conto.model';
+import { UtenteService } from 'src/app/core/services/utente.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   readonly buttonWidth = '400px';
   readonly buttonHeight = '250px';
 
@@ -30,10 +30,12 @@ export class HomeComponent implements OnInit {
     panelClass: 'toast-warning',
   };
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private routingService: RoutingService,
     private selfStore: SelfStore,
-    private clienteService: ClienteService,
+    private utenteService: UtenteService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {}
@@ -41,23 +43,28 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.routingService.updateHeader('Home');
     if (!this.selfStore.email || !this.selfStore.budget) {
-      scheduled([
-        this.clienteService.getSelfClient(),
-        this.clienteService.getSelfConto(),
-      ], asyncScheduler).pipe(
-        mergeAll(),
-        map((element) => {
-          if (this.isSelfCliente(element)) {
-            this.selfStore.updateCliente(element as Cliente);
-          } else if (this.isSelfConto(element)) {
-            this.selfStore.updateConto(element as Conto);
-          }
-        })
-      )
-      .subscribe(() => this.handleCustomerPermission());
+      this.subscriptions.push(
+        scheduled([
+          this.utenteService.getSelfUtente(),
+          this.utenteService.getSelfConto(),
+        ], asyncScheduler).pipe(
+          mergeAll(),
+          map((element) => {
+            if (this.isSelfCliente(element)) {
+              this.selfStore.updateCliente(element as Utente);
+            } else if (this.isSelfConto(element)) {
+              this.selfStore.updateConto(element as Conto);
+            }
+          })
+        )
+        .subscribe(() => this.handleCustomerPermission()));
     } else {
       this.handleCustomerPermission();
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   gotoPayment() {
