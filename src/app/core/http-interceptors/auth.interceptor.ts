@@ -1,8 +1,8 @@
-import { HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { AuthStore } from '../../features/login-page/store/auth.store';
 
@@ -22,14 +22,13 @@ export class AuthInterceptor implements HttpInterceptor {
     });
     return next.handle(authReq)
     .pipe(
-      // filter((response: HttpResponse<any>) => ),
-      map( (response: HttpResponse<any>) => {
-          if ( response && response.status === 403) {
-            console.error('Token di accesso scaduto, logout!');
-            this.authStore.token = undefined;
-            this.router.navigate([]);
-          }
-          return response;
+      catchError((error: HttpErrorResponse) => {
+        if ( error && error.status === 403) {
+          console.error('Token di accesso scaduto, logout!');
+          this.authStore.token = undefined;
+          this.router.navigate([]);
+        }
+        return throwError(error);
       })
     );
   }
