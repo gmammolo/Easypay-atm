@@ -10,6 +10,6 @@
     <div class="info--conto value">{{numConto || '-'}}</div>
     <div class="info--name value">{{name || '-'}}</div>
     <div *ngIf="regSocial" class="info--reg value">{{regSocial}}</div>
-    <div class="info--addr value">{{address || '-'}}</div>
+    <div class="info--addr value">{{((address.length >= 60) ? (address | slice:0:60) + '...' : address)  || '-'}}</div>
   </div>
 </div>
