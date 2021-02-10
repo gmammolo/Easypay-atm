@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,12 +14,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 import { CoreModule } from '../core/core.module';
 import { BannerComponent } from './components/banner/banner.component';
@@ -41,9 +42,9 @@ import { PriceWidgetComponent } from './components/price-widget/price-widget.com
 import { QrCodeComponent } from './components/qr-code/qr-code.component';
 import { RecognitionComponent } from './components/recognition/recognition.component';
 import { NumericDirective } from './directives/numeric.directive';
+import { InfoAtmComponent } from './info-atm/info-atm.component';
 import { MinPipe } from './pipes/min.pipe';
 import { SwitchNumberPipe } from './pipes/switch-number.pipe';
-import { InfoAtmComponent } from './info-atm/info-atm.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import { InfoAtmComponent } from './info-atm/info-atm.component';
     MatIconModule,
     MatAutocompleteModule,
     MatTableModule,
+    MatSelectModule,
   ],
   exports: [
     LoaderComponent,
@@ -124,6 +126,7 @@ import { InfoAtmComponent } from './info-atm/info-atm.component';
     MatIconModule,
     MatAutocompleteModule,
     MatTableModule,
+    MatSelectModule,
   ],
   entryComponents: [JoinPart0Component, JoinPart1Component, JoinPart2Component, JoinPart3Component, InfoDialogComponent, InfoAtmComponent],
 })

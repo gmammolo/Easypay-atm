@@ -52,6 +52,10 @@ export class QrCodeComponent implements OnInit {
     }
   }
 
+  selectDevice(deviceId: string) {
+    this.currentDevice = this.availableDevices.find(dev => dev.deviceId === deviceId);
+  }
+
   /** modifica lo stato del reader, che indica se è in funzione o ha dei problemi in esecuzione */
   readerStatus(status: boolean) {
     this.statusScanner$.next(status);
