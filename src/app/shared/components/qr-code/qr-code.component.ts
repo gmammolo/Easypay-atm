@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
 import { BarcodeFormat } from '@zxing/library';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { BehaviorSubject } from 'rxjs';
@@ -52,8 +53,8 @@ export class QrCodeComponent implements OnInit {
     }
   }
 
-  selectDevice(deviceId: string) {
-    this.currentDevice = this.availableDevices.find(dev => dev.deviceId === deviceId);
+  selectDevice(change: MatSelectChange) {
+    this.currentDevice = this.availableDevices.find(dev => dev.deviceId === change.value) || null;
   }
 
   /** modifica lo stato del reader, che indica se è in funzione o ha dei problemi in esecuzione */
