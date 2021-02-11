@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { BarcodeFormat } from '@zxing/library';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { UtenteService } from 'src/app/core/services/utente.service';
 
 import { Utente } from '../../models/utente.model';
@@ -12,7 +12,7 @@ import { Utente } from '../../models/utente.model';
   templateUrl: './qr-code.component.html',
   styleUrls: ['./qr-code.component.scss']
 })
-export class QrCodeComponent implements OnInit {
+export class QrCodeComponent implements OnInit, OnDestroy {
 
   /** standard accettati dal lettore */
   readonly allowedFormats = [ BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13];
@@ -31,18 +31,25 @@ export class QrCodeComponent implements OnInit {
   /** determina se è riuscito ad aprire o meno lo scanner */
   statusScanner$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private utenteService: UtenteService) { }
 
   ngOnInit() { }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   /** alla lettura dello stato prova ad effettuare il login */
   scanSuccessHandler(token: string) {
     this.scanner.enable = false;
-    this.utenteService.getUtenteByTokenOtp(token).subscribe(
-      cliente => {
-        console.warn(cliente);
-        this.clientAuthEvent.emit(cliente)},
-      error => this.scanner.enable = true);
+    this.subscriptions.push(
+      this.utenteService.getUtenteByTokenOtp(token).subscribe(
+        cliente => this.clientAuthEvent.emit(cliente),
+        error => this.scanner.enable = true
+      )
+    );
   }
 
   onCamerasFound(devices: MediaDeviceInfo[]): void {
