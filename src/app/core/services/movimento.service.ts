@@ -21,11 +21,7 @@ export class MovimentoService {
       to: idContoCommerciante,
       value: prezzo,
     };
-    return this.http.post<{ success: boolean; error?: { id: string; message: string } }>(ApiRoute.pagamenti, params).pipe(
-      map(result => {
-        console.error('TODO: gestire la risposta del pagamento');
-      })
-    );
+    return this.http.post<{ success: boolean; error?: { id: string; message: string } }>(ApiRoute.pagamenti, params);
   }
 
   /** effettua un movimento di caricamento sul cliente indicato da idCliente */
@@ -36,11 +32,7 @@ export class MovimentoService {
       to: idContoCliente,
       value: prezzo,
     };
-    return this.http.post<{ success: boolean; error?: { id: string; message: string } }>(ApiRoute.ricariche, params).pipe(
-      map(result => {
-        console.error('TODO: gestire la risposta del pagamento');
-      })
-    );
+    return this.http.post<{ success: boolean; error?: { id: string; message: string } }>(ApiRoute.ricariche, params);
   }
 
   /**
