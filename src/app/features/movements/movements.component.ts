@@ -15,7 +15,7 @@ import { Movimento } from 'src/app/shared/models/movimento.model';
 export class MovementsComponent implements OnInit, OnDestroy {
   readonly MovimentoType = MovimentoType;
 
-  displayedColumns: string[] = ['id', 'valore', 'tipo', 'from_name', 'to_name', 'id_atm', 'date'];
+  displayedColumns: string[] = ['id', 'valore', 'tipo', 'from_name_or_id_atm', 'to_name', 'date'];
 
   dataSource: Observable<Movimento[]>;
 
