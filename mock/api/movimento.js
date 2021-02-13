@@ -1,78 +1,114 @@
 module.exports = function (app) {
+  const movimenti = {
+    saldo: 126.0,
+    budget: 0.0,
+    movimenti: [
+      {
+        id: 26,
+        valore: 4.0,
+        timestamp: '2021-02-13T19:14:04.728',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 22,
+        from_name: 'Bianchi Mario',
+      },
+      {
+        id: 25,
+        valore: 4.0,
+        timestamp: '2021-02-13T18:36:40.664',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 22,
+        from_name: 'Bianchi Mario',
+      },
+      {
+        id: 24,
+        valore: 1.0,
+        timestamp: '2021-02-11T14:52:10.006',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 22,
+        from_name: 'Bianchi Mario',
+      },
+      {
+        id: 23,
+        valore: 2.0,
+        timestamp: '2021-02-10T13:00:18.562',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 22,
+        from_name: 'Bianchi Mario',
+      },
+      {
+        id: 22,
+        valore: 10.0,
+        timestamp: '2021-02-10T12:59:16.948',
+        id_atm: 1,
+        type: 'ricarica',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: null,
+        from_name: null,
+      },
+      {
+        id: 19,
+        valore: 4.0,
+        timestamp: '2021-02-02T13:55:09.582',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 21,
+        from_name: 'Prodotti Scolastici',
+      },
+      {
+        id: 18,
+        valore: 1.0,
+        timestamp: '2021-02-02T10:03:53.343',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 21,
+        from_name: 'Prodotti Scolastici',
+      },
+      {
+        id: 16,
+        valore: 4.0,
+        timestamp: '2021-02-02T08:49:54.622',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 20,
+        from_name: 'Sedie da Manager',
+      },
+      {
+        id: 16,
+        valore: 4.0,
+        timestamp: '2021-02-02T08:49:54.622',
+        type: 'pagamento',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: 20,
+        from_name: 'Sedie da Manager',
+      },
+      {
+        id: 15,
+        valore: 100.0,
+        timestamp: '2021-02-01T17:27:17.075',
+        id_atm: 1,
+        type: 'ricarica',
+        to: 20,
+        to_name: 'Sedie da Manager',
+        from: null,
+        from_name: null,
+      },
+    ],
+  };
 
-  const movimenti = [
-    {
-        "id": 12,
-        "valore": 1.0,
-        "timestamp": "2021-01-14T11:19:41.934",
-        "type": "pagamento",
-        "from": 1,
-        "from_name": "Pioppo Paolo",
-        "to": 3,
-        "to_name": "Pizzeria Mare Blu"
-    },
-    {
-        "id": 10,
-        "valore": 1.0,
-        "timestamp": "2021-01-14T11:16:59.739",
-        "type": "pagamento",
-        "from": 1,
-        "from_name": "Pioppo Paolo",
-        "to": 3,
-        "to_name": "Pizzeria Mare Blu"
-    },
-    {
-        "id": 9,
-        "valore": 30.0,
-        "timestamp": "2021-01-13T21:44:32.007",
-        "id_atm": 1,
-        "type": "ricarica",
-        "from": null,
-        "from_name": null,
-        "to": 1,
-        "to_name": "Pioppo Paolo"
-    },
-    {
-        "id": 8,
-        "valore": 40.0,
-        "timestamp": "2021-01-13T21:44:25.92",
-        "id_atm": 1,
-        "type": "ricarica",
-        "from": null,
-        "from_name": null,
-        "to": 1,
-        "to_name": "Pioppo Paolo"
-    },
-    {
-        "id": 3,
-        "valore": 100.0,
-        "timestamp": "2021-01-13T21:43:00.593",
-        "id_atm": 1,
-        "type": "ricarica",
-        "from": null,
-        "from_name": null,
-        "to": 1,
-        "to_name": "Pioppo Paolo"
-    },
-    {
-        "id": 1,
-        "valore": 100.0,
-        "timestamp": "2021-01-13T19:04:18.94",
-        "id_atm": 1,
-        "type": "ricarica",
-        "from": null,
-        "from_name": null,
-        "to": 1,
-        "to_name": "Pioppo Paolo"
-    }
-]
-
-  app.get("/api/movimenti", (req, res, next) => {
-    res.json({
-        idConto: 20,
-        saldo: 30,
-        movimenti,
-    });
+  app.get('/api/movimenti', (req, res, next) => {
+    res.json(movimenti);
   });
-
-}
+};
