@@ -33,13 +33,13 @@
   <!-- From or ATM Column -->
   <ng-container matColumnDef="from_name_or_id_atm">
     <th mat-header-cell *matHeaderCellDef>Da/ATM</th>
-    <td mat-cell *matCellDef="let movimento">{{ movimento.type === MovimentoType.pagamento ? movimento.from_name : (movimento.id_atm | atmName | async) || "-" }}</td>
+    <td mat-cell *matCellDef="let movimento">{{ getFromName(movimento) || "-" }}</td>
   </ng-container>
 
   <!-- To Column -->
   <ng-container matColumnDef="to_name">
     <th mat-header-cell *matHeaderCellDef>A</th>
-    <td mat-cell *matCellDef="let movimento">{{ movimento.to_name }}</td>
+    <td mat-cell *matCellDef="let movimento">{{ getToName(movimento) }}</td>
   </ng-container>
 
   <!-- Data -->
