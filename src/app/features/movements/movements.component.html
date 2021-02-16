@@ -11,7 +11,7 @@
   </div>
 </div>
 
-<table mat-table [dataSource]="dataSource | async" class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource | async | filterMovements" class="mat-elevation-z8">
   <!-- Id Column -->
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Ref.</th>
