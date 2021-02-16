@@ -15,7 +15,7 @@ import { Movimento } from 'src/app/shared/models/movimento.model';
 export class MovementsComponent implements OnInit, OnDestroy {
   readonly MovimentoType = MovimentoType;
 
-  displayedColumns: string[] = ['id', 'valore', 'tipo', 'from_name', 'to_name', 'id_atm', 'date'];
+  displayedColumns: string[] = ['id', 'valore', 'tipo', 'from_name_or_id_atm', 'to_name', 'date'];
 
   dataSource: Observable<Movimento[]>;
 
@@ -38,8 +38,28 @@ export class MovementsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  /** contrassegna chi riceve i messaggi */
   isReceipt(movimento: Movimento): boolean {
     return movimento.type === MovimentoType.ricarica || movimento.to === this.selfStore.idConto;
+  }
+
+  getFromName(movimento: Movimento) {
+    if (movimento.type === MovimentoType.ricarica) {
+      return 'ATM01';
+    }
+    if (movimento.to === this.selfStore.id) {
+      return movimento.from_name;
+    } else {
+      return movimento.to_name;
+    }
+  }
+
+  getToName(movimento: Movimento) {
+    if (movimento.to === this.selfStore.id) {
+      return movimento.to_name;
+    } else {
+      return movimento.from_name;
+    }
   }
 
 }
