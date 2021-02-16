@@ -81,12 +81,11 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ### Componenti Fondamentali
 
-- **module**: 
-Sono delle librerie che suddividono sia logicamente che strutturalmente le varie funzioni dell'applicazione che verrà creata
-- **component**: 
-- **directive**: 
-- **pipe**: 
-- **service**: 
+- **module**
+- **component**
+- **directive**
+- **pipe**
+- **service**
 
 #### module
 Sono delle librerie che suddividono sia logicamente che strutturalmente le varie funzioni dell'applicazione che verrà creata.
@@ -145,8 +144,8 @@ Dal momento della sua creazione il componente ha un cosiddetto 'lifecycle' nei q
 - constructor
 - onChanges
 - onInit
-- doCheck
-    - AfterContentInit    <-
+    - doCheck             <-  
+    - AfterContentInit      |
     - AfterContentChecked   |
     - AfterViewInit         |
     - AfterViewChecked    __|
